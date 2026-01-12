@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Комментарии</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .success-message {
+            color: green;
+            background-color: #e6ffe6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .error-message {
+            color: red;
+            background-color: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .action-links a {
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .add-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .add-button:hover {
+            background-color: #45a049;
+        }
+        .empty-list {
+            color: #666;
+            font-style: italic;
+            margin: 20px 0;
+        }
+        .rating-star {
+            color: gold;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>💬 Список комментариев</h1>
+
+<!-- Сообщение об успехе -->
+<div th:if="${successMessage}" class="success-message">
+    ✅ <span th:text="${successMessage}"></span>
+</div>
+
+<!-- Сообщение об ошибке -->
+<div th:if="${errorMessage}" class="error-message">
+    ❌ <span th:text="${errorMessage}"></span>
+</div>
+
+<a th:href="@{/comments/add}" class="add-button">➕ Добавить комментарий</a>
+
+<!-- Проверка на пустой список -->
+<div th:if="${comments == null or comments.empty}" class="empty-list">
+    <p>Список комментариев пуст. Добавьте первый комментарий!</p>
+</div>
+
+<!-- Таблица только если есть комментарии -->
+<table th:unless="${comments == null or comments.empty}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Читатель</th>
+        <th>Оценка</th>
+        <th>Книга (Автор)</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${comments}">
+        <td th:text="${comment.id}"></td>
+        <td th:text="${comment.reader}"></td>
+        <td>
+            <span class="rating-star" th:text="${comment.rating}"></span>/5
+            <span th:if="${comment.rating == 5}" style="color: gold;">⭐</span>
+            <span th:if="${comment.rating >= 4}" style="color: gold;">⭐</span>
+            <span th:if="${comment.rating >= 3}" style="color: gold;">⭐</span>
+        </td>
+        <td>
+            <span th:text="${comment.book?.name}"></span>
+            <span th:if="${comment.book?.author != null}">
+                        (<span th:text="${comment.book.author.name}"></span>)
+                    </span>
+            <span th:if="${comment.book == null}" style="color: #999; font-style: italic;">
+                        (книга удалена)
+                    </span>
+        </td>
+        <td class="action-links">
+            <a th:href="@{/comments/edit/{id}(id=${comment.id})}"
+               style="color: #2196F3;">✏️ Изменить</a>
+            <a th:href="@{/comments/delete/{id}(id=${comment.id})}"
+               onclick="return confirm('Вы уверены?')">
+                Удалить
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a href="/">🏠 На главную</a>
+</body>
+</html>

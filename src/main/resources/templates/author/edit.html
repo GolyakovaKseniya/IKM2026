@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить автора</title>
+    <style>
+        .error { color: red; font-size: 0.9em; }
+        .server-error {
+            color: red;
+            background-color: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<h1>Изменить автора</h1>
+
+<!-- Сообщение об ошибке из сервиса -->
+<div th:if="${errorMessage}" class="server-error">
+    <strong>Ошибка:</strong> <span th:text="${errorMessage}"></span>
+</div>
+
+<form th:action="@{/authors/edit/{id}(id=${author.id})}" th:object="${author}" method="post">
+    <div>
+        <label>Имя автора:</label>
+        <input type="text" th:field="*{name}" required
+               placeholder="Введите новое имя автора">
+
+        <!-- Отображение ошибок валидации -->
+        <div th:if="${#fields.hasErrors('name')}" class="error">
+            <span th:errors="*{name}"></span>
+        </div>
+    </div>
+
+    <br>
+    <button type="submit">Сохранить изменения</button>
+    <a th:href="@{/authors}">Отмена</a>
+</form>
+
+<br>
+<a href="/">На главную</a>
+</body>
+</html>

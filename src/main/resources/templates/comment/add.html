@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить комментарий</title>
+    <style>
+        .error { color: red; font-size: 0.9em; }
+        .server-error {
+            color: red;
+            background-color: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .success { color: green; font-size: 0.9em; }
+        label { display: inline-block; width: 120px; }
+        input, select { margin-bottom: 10px; width: 300px; }
+    </style>
+</head>
+<body>
+<h1>Добавить комментарий</h1>
+
+<!-- Сообщение об ошибке из сервиса -->
+<div th:if="${errorMessage}" class="server-error">
+    <strong>Ошибка:</strong> <span th:text="${errorMessage}"></span>
+</div>
+
+<!-- Сообщение об успехе -->
+<div th:if="${successMessage}" class="success">
+    <span th:text="${successMessage}"></span>
+</div>
+
+<form th:action="@{/comments/add}" th:object="${comment}" method="post">
+    <div>
+        <label>Читатель:</label>
+        <input type="text" th:field="*{reader}" required
+               placeholder="Введите имя читателя">
+        <!-- Ошибки валидации читателя -->
+        <div th:if="${#fields.hasErrors('reader')}" class="error">
+            <span th:errors="*{reader}"></span>
+        </div>
+    </div>
+
+    <div>
+        <label>Оценка (1-5):</label>
+        <input type="number" th:field="*{rating}" min="1" max="5" required
+               placeholder="От 1 до 5">
+        <!-- Ошибки валидации оценки -->
+        <div th:if="${#fields.hasErrors('rating')}" class="error">
+            <span th:errors="*{rating}"></span>
+        </div>
+    </div>
+
+    <div>
+        <label>Книга:</label>
+        <select th:field="*{book.id}" required>
+            <option value="">-- Выберите книгу --</option>
+            <option th:each="book : ${books}"
+                    th:value="${book.id}"
+                    th:text="${book.name + ' (' + book.author?.name + ')'}">
+            </option>
+        </select>
+        <!-- Ошибки валидации книги -->
+        <div th:if="${#fields.hasErrors('book')}" class="error">
+            <span th:errors="*{book}"></span>
+        </div>
+    </div>
+
+    <br>
+    <button type="submit">Сохранить</button>
+    <a th:href="@{/comments}">Отмена</a>
+</form>
+
+<br>
+<a href="/">На главную</a>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить комментарий</title>
+    <style>
+        .error { color: red; }
+    </style>
+</head>
+<body>
+<h1>Изменить комментарий</h1>
+
+<!-- Сообщение об ошибке -->
+<div th:if="${error}" style="color: red; padding: 10px; background: #ffe6e6;">
+    <strong>Ошибка:</strong> <span th:text="${error}"></span>
+</div>
+
+<form th:action="@{/comments/edit/{id}(id=${comment.id})}" method="post">
+    <!-- Скрытое поле для ID -->
+    <input type="hidden" name="id" th:value="${comment.id}">
+
+    <div>
+        <label>Читатель:</label>
+        <input type="text" name="reader" th:value="${comment.reader}" required
+               placeholder="Введите имя читателя">
+    </div>
+
+    <div>
+        <label>Оценка (1-5):</label>
+        <input type="number" name="rating" th:value="${comment.rating}"
+               min="1" max="5" required placeholder="От 1 до 5">
+    </div>
+
+    <div>
+        <label>Книга:</label>
+        <select name="book.id" required>
+            <option value="">-- Выберите книгу --</option>
+            <option th:each="book : ${books}"
+                    th:value="${book.id}"
+                    th:selected="${comment.book != null and comment.book.id == book.id}"
+                    th:text="${book.name}">
+            </option>
+        </select>
+    </div>
+
+    <br>
+    <button type="submit">Сохранить изменения</button>
+    <a href="/comments">Отмена</a>
+</form>
+
+<br>
+<a href="/">На главную</a>
+</body>
+</html>

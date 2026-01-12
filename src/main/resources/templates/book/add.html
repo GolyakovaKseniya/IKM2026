@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить книгу</title>
+    <style>
+        .error { color: red; font-size: 0.9em; }
+        .server-error {
+            color: red;
+            background-color: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .success { color: green; font-size: 0.9em; }
+        label { display: inline-block; width: 100px; }
+        input, select { margin-bottom: 10px; width: 300px; }
+    </style>
+</head>
+<body>
+<h1>Добавить книгу</h1>
+
+<!-- Сообщение об ошибке из сервиса -->
+<div th:if="${errorMessage}" class="server-error">
+    <strong>Ошибка:</strong> <span th:text="${errorMessage}"></span>
+</div>
+
+<!-- Сообщение об успехе -->
+<div th:if="${successMessage}" class="success">
+    <span th:text="${successMessage}"></span>
+</div>
+
+<form th:action="@{/books/add}" th:object="${book}" method="post">
+    <div>
+        <label>Название:</label>
+        <input type="text" th:field="*{name}" required
+               placeholder="Введите название книги">
+        <!-- Ошибки валидации названия -->
+        <div th:if="${#fields.hasErrors('name')}" class="error">
+            <span th:errors="*{name}"></span>
+        </div>
+    </div>
+
+    <div>
+        <label>Жанр:</label>
+        <input type="text" th:field="*{genre}"
+               placeholder="Введите жанр (необязательно)">
+        <!-- Ошибки валидации жанра -->
+        <div th:if="${#fields.hasErrors('genre')}" class="error">
+            <span th:errors="*{genre}"></span>
+        </div>
+    </div>
+
+    <div>
+        <label>Автор:</label>
+        <select th:field="*{author.id}" required>
+            <option value="">-- Выберите автора --</option>
+            <option th:each="author : ${authors}"
+                    th:value="${author.id}"
+                    th:text="${author.name}">
+            </option>
+        </select>
+        <!-- Ошибки валидации автора -->
+        <div th:if="${#fields.hasErrors('author')}" class="error">
+            <span th:errors="*{author}"></span>
+        </div>
+    </div>
+
+    <br>
+    <button type="submit">Сохранить</button>
+    <a th:href="@{/books}">Отмена</a>
+</form>
+
+<br>
+<a href="/">На главную</a>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить автора</title>
+    <style>
+        .error { color: red; margin-top: 5px; }
+        .server-error { color: red; background: #ffe6e6; padding: 10px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+<h1>Добавить автора</h1>
+
+<!-- Ошибка дубликата -->
+<div th:if="${error}" class="server-error">
+    ❌ <span th:text="${error}"></span>
+</div>
+
+<form th:action="@{/authors/add}" th:object="${author}" method="post">
+    <div>
+        <label>Имя автора:</label><br>
+        <input type="text" th:field="*{name}" required placeholder="Введите имя">
+
+        <!-- Ошибки валидации поля -->
+        <div th:if="${#fields.hasErrors('name')}" class="error">
+            <span th:errors="*{name}"></span>
+        </div>
+    </div>
+
+    <br>
+    <button type="submit">Сохранить</button>
+    <a th:href="@{/authors}">Отмена</a>
+</form>
+
+<br>
+<a href="/">На главную</a>
+</body>
+</html>

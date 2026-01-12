@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Изменить книгу</title>
+    <style>
+        .error { color: red; }
+    </style>
+</head>
+<body>
+<h1>Изменить книгу</h1>
+
+<!-- Сообщение об ошибке -->
+<div th:if="${error}" style="color: red; padding: 10px; background: #ffe6e6;">
+    <strong>Ошибка:</strong> <span th:text="${error}"></span>
+</div>
+
+<form th:action="@{/books/edit/{id}(id=${book.id})}" method="post">
+    <!-- Скрытое поле для ID -->
+    <input type="hidden" name="id" th:value="${book.id}">
+
+    <div>
+        <label>Название книги:</label>
+        <input type="text" name="name" th:value="${book.name}" required
+               placeholder="Введите название книги">
+    </div>
+
+    <div>
+        <label>Жанр:</label>
+        <input type="text" name="genre" th:value="${book.genre}"
+               placeholder="Введите жанр (необязательно)">
+    </div>
+
+    <div>
+        <label>Автор:</label>
+        <select name="author.id" required>
+            <option value="">-- Выберите автора --</option>
+            <option th:each="author : ${authors}"
+                    th:value="${author.id}"
+                    th:selected="${book.author != null and book.author.id == author.id}"
+                    th:text="${author.name}">
+            </option>
+        </select>
+    </div>
+
+    <br>
+    <button type="submit">Сохранить изменения</button>
+    <a href="/books">Отмена</a>
+</form>
+
+<br>
+<a href="/">На главную</a>
+</body>
+</html>

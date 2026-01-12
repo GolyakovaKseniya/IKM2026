@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Авторы</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .success-message {
+            color: green;
+            background-color: #e6ffe6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .error-message {
+            color: red;
+            background-color: #ffe6e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .action-links a {
+            margin-right: 10px;
+            text-decoration: none;
+        }
+        .action-links a:hover {
+            text-decoration: underline;
+        }
+        .add-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .add-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>📚 Список авторов</h1>
+
+<!-- Сообщение об успехе (например, после добавления/редактирования/удаления) -->
+<div th:if="${successMessage}" class="success-message">
+    ✅ <span th:text="${successMessage}"></span>
+</div>
+
+<!-- Сообщение об ошибке -->
+<div th:if="${errorMessage}" class="error-message">
+    ❌ <span th:text="${errorMessage}"></span>
+</div>
+
+<a th:href="@{/authors/add}" class="add-button">➕ Добавить автора</a>
+
+<!-- Проверка на пустой список -->
+<div th:if="${authors != null and authors.empty}">
+    <p>Список авторов пуст. Добавьте первого автора!</p>
+</div>
+
+<table th:unless="${authors == null or authors.empty}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Имя автора</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="author : ${authors}">
+        <td th:text="${author.id}"></td>
+        <td th:text="${author.name}"></td>
+        <td class="action-links">
+            <a th:href="@{/authors/edit/{id}(id=${author.id})}"
+               style="color: #2196F3;">✏️ Изменить</a>
+            <a th:href="@{/authors/delete/{id}(id=${author.id})}"
+               style="color: #f44336;"
+               onclick="return confirm('Вы уверены, что хотите удалить автора?')">🗑️ Удалить</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<a href="/">🏠 На главную</a>
+</body>
+</html>
